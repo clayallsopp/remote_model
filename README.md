@@ -7,8 +7,10 @@ JSON API <-> NSObject in one line. Powered by RubyMotion and [BubbleWrap](https:
 
 Add the git repos as submodules in ./vendor:
 
-  git submodule add git://github.com/mattetti/BubbleWrap.git ./vendor/BubbleWrap
-  git submodule add git://github.com:clayallsopp/remote_model.git ./vendor/remote_model
+```shell
+git submodule add git://github.com/mattetti/BubbleWrap.git ./vendor/BubbleWrap
+git submodule add git://github.com:clayallsopp/remote_model.git ./vendor/remote_model
+```
 
 Then add the lib paths to your ./Rakefile:
 
