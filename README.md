@@ -103,6 +103,7 @@ module RemoteModule
 
     # Options attached to every request
     # Appendable per model subclass
+    # See BubbleWrap docs on what can be passed in BubbleWrap::HTTP.<method>(url, options)
     self.default_url_options = {
         :headers => {
           "x-api-token" => "some_token",
