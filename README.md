@@ -3,48 +3,6 @@
 
 JSON API <-> NSObject in one line. Powered by RubyMotion and [BubbleWrap](https://github.com/mattetti/BubbleWrap/).
 
-## Installation
-
-Add the git repos as submodules in ./vendor:
-
-```shell
-git submodule add git://github.com/mattetti/BubbleWrap.git ./vendor/BubbleWrap
-git submodule add git://github.com:clayallsopp/remote_model.git ./vendor/remote_model
-```
-
-Then add the lib paths to your ./Rakefile:
-
-```ruby
-Motion::Project::App.setup do |app|
-  ...
-  app.files = Dir.glob(File.join(app.project_dir, 'vendor/BubbleWrap/lib/**/*.rb')) 
-    + Dir.glob(File.join(app.project_dir, 'vendor/remote_model/lib/**/*.rb')) 
-    + app.files
-  ...
-end
-```
-
-Add an initialization file somewhere, like ./app/initializers/remote_model.rb. This is where we put the API specifications:
-
-```ruby
-module RemoteModule
-  class RemoteModel
-    # The default URL for our requests.
-    # Overrideable per model subclass
-    self.root_url = "http://localhost:5000/"
-
-    # Options attached to every request
-    # Appendable per model subclass
-    self.default_url_options = {
-        :headers => {
-          "x-api-token" => "some_token",
-          "Accept" => "application/json"
-        }
-      }
-  end
-end
-```
-
 ## Example
 
 Let's say we have some User and Question objects retrievable via our API. We can do fun stuff like:
@@ -104,6 +62,48 @@ class Question < RemoteModule::RemoteModel
 end
 ```
 
+## Installation
+
+Add the git repos as submodules in ./vendor:
+
+```shell
+git submodule add git://github.com/mattetti/BubbleWrap.git ./vendor/BubbleWrap
+git submodule add git://github.com:clayallsopp/remote_model.git ./vendor/remote_model
+```
+
+Then add the lib paths to your ./Rakefile:
+
+```ruby
+Motion::Project::App.setup do |app|
+  ...
+  app.files = Dir.glob(File.join(app.project_dir, 'vendor/BubbleWrap/lib/**/*.rb')) 
+    + Dir.glob(File.join(app.project_dir, 'vendor/remote_model/lib/**/*.rb')) 
+    + app.files
+  ...
+end
+```
+
+Add an initialization file somewhere, like ./app/initializers/remote_model.rb. This is where we put the API specifications:
+
+```ruby
+module RemoteModule
+  class RemoteModel
+    # The default URL for our requests.
+    # Overrideable per model subclass
+    self.root_url = "http://localhost:5000/"
+
+    # Options attached to every request
+    # Appendable per model subclass
+    self.default_url_options = {
+        :headers => {
+          "x-api-token" => "some_token",
+          "Accept" => "application/json"
+        }
+      }
+  end
+end
+```
+
 ## How?
 
 RemoteModel is designed for JSON apis which return structures with "nice" properties. 
@@ -119,6 +119,11 @@ The AR methods also use the member/collection defined URLs to make requests. The
 => "url/:param"
 >> s.format({param: 6})
 => "url/6"
+>> obj = SomeObjectThatRespondsToParam.new
+=> ...
+>> obj.param = 10
+>> s.format({}, obj)
+=>  "url/100"
 ```
 
 RemoteModels can define custom urls and call those as methods (see question.rb above).
