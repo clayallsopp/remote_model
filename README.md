@@ -56,6 +56,10 @@ class Question < RemoteModule::RemoteModel
   end
 
   # An example of how we can use custom URLs to make custom nice(r) methods
+  # EX
+  # a_question.make_active(false) do |question|
+  #   p question.is_active
+  # end
   def make_active(active)
     post(self.active_url, payload: {active: active}) do |response, json|
       self.is_active = json[:question][:is_active]
