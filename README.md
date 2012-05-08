@@ -8,8 +8,10 @@ JSON API <-> NSObject in one line. Powered by RubyMotion and [BubbleWrap](https:
 Let's say we have some User and Question objects retrievable via our API. We can do fun stuff like:
 
 ```ruby
+# GET http://ourapi.com/users/1.json -> {:user => {id: 1}}
 user = User.find(1) do |user|
   # async
+  # GET http://ourapi.com/users/1/questions.json -> {:questions => [...]}
   Question.find_all(user_id: user.id) do |questions|
     # async
     puts questions
@@ -47,10 +49,13 @@ class Question < RemoteModule::RemoteModel
 
   custom_urls :active_url => member_url + "/make_active"
 
+  # The urls substitute params based on a passed hash and/or object's methods,
+  # so we define user_id to use for the collection/member urls
   def user_id
     user && user.id
   end
 
+  # An example of how we can use custom URLs to make custom nice(r) methods
   def make_active(active)
     post(self.active_url, payload: {active: active}) do |response, json|
       self.is_active = json[:question][:is_active]
