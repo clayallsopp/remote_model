@@ -47,7 +47,23 @@ end
 
 ## Example
 
-Let's say we have some User, Question, and Answer objects retrievable via our API. Here's what our files can look like:
+Let's say we have some User and Question objects retrievable via our API. We can do fun stuff like:
+
+```ruby
+user = User.find(1) do |user|
+  # async
+  Question.find_all(user_id: user.id) do |questions|
+    # async
+    puts questions
+  end
+end
+
+# Later...
+=> [#<Question @answers=[#<Answer>, #<Answer>] @user=#<User>, 
+    #<Question @answers=[#<Answer>, #<Answer>] @user=#<User>]
+```
+
+Here's what our files look like:
 
 #### ./app/models/user
 ```ruby
@@ -67,7 +83,6 @@ class Question < RemoteModule::RemoteModel
   attr_accessor :id, :question, :is_active
 
   belongs_to :user
-  has_many :answers
 
   collection_url "users/:user_id/questions"
   member_url "users/:user_id/questions/:id"
@@ -87,29 +102,4 @@ class Question < RemoteModule::RemoteModel
     end
   end
 end
-```
-
-#### ./app/models/answer.rb
-```ruby
-class Answer < RemoteModule::RemoteModel
-  attr_accessor :id, :answer
-
-  belongs_to :question
-end
-```
-
-And now we can do fun stuff:
-
-```ruby
-user = User.find(1) do |user|
-  # async
-  Question.find_all(user_id: user.id) do |questions|
-    # async
-    puts questions
-  end
-end
-
-# Later...
-=> [#<Question @answers=[#<Answer>, #<Answer>] @user=#<User>, 
-    #<Question @answers=[#<Answer>, #<Answer>] @user=#<User>]
 ```
