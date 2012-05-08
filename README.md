@@ -106,22 +106,21 @@ end
 
 ## How?
 
-RemoteModel is designed for JSON apis which return structures with "nice" properties. 
+RemoteModel is designed for JSON APIs which return structures with "nice" properties.
 
 When you make a request with a RemoteModel (self.get/put/post/delete), the result is always parsed as JSON. The ActiveRecord-esque methods take this JSON and create objects out of it. It's clever and creates the proper associations (belongs_to/has_one/has_many) within the objects, as defined in the models.
 
 #### FormatableString
 
-The AR methods also use the member/collection defined URLs to make requests. These URLs are a string which you can use :symbols to input dynamic values. These strings can be formatted using a hash and/or taking an object (it will look to see if the object responds to these symbols and call the method if applicable):
+The AR methods also use the member/collection defined URLs to make requests. These URLs are a string which you can use :symbols to input dynamic values. These strings can be formatted using a hash and/or using an object (it will look to see if the object responds to these symbols and call the method if applicable):
 
 ```ruby
 >> s = RemoteModule::FormatableString.new("url/:param")
 => "url/:param"
 >> s.format({param: 6})
 => "url/6"
->> obj = SomeObjectThatRespondsToParam.new
+>> obj = Struct.new("Paramer", :param).new(param: 100)
 => ...
->> obj.param = 10
 >> s.format({}, obj)
 =>  "url/100"
 ```
