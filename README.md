@@ -68,7 +68,7 @@ Add the git repos as submodules in ./vendor:
 
 ```shell
 git submodule add git://github.com/mattetti/BubbleWrap.git ./vendor/BubbleWrap
-git submodule add git://github.com:clayallsopp/remote_model.git ./vendor/remote_model
+git submodule add git://github.com/clayallsopp/remote_model.git ./vendor/remote_model
 ```
 
 Then add the lib paths to your ./Rakefile:
