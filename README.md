@@ -59,8 +59,8 @@ user = User.find(1) do |user|
 end
 
 # Later...
-=> [#<Question @answers=[#<Answer>, #<Answer>] @user=#<User>, 
-    #<Question @answers=[#<Answer>, #<Answer>] @user=#<User>]
+=> [#<Question @user=#<User>, 
+    #<Question @user=#<User>]
 ```
 
 Here's what our files look like:
@@ -103,3 +103,27 @@ class Question < RemoteModule::RemoteModel
   end
 end
 ```
+
+## How?
+
+RemoteModel is designed for JSON apis which return structures with "nice" properties. 
+
+When you make a request with a RemoteModel (self.get/put/post/delete), the result is always parsed as JSON. The ActiveRecord-esque methods take this JSON and create objects out of it. It's clever and creates the proper associations (belongs_to/has_one/has_many) within the objects, as defined in the models.
+
+#### FormatableString
+
+The AR methods also use the member/collection defined URLs to make requests. These URLs are a string which you can use :symbols to input dynamic values. These strings can be formatted using a hash and/or taking an object (it will look to see if the object responds to these symbols and call the method if applicable):
+
+```ruby
+>> s = RemoteModule::FormatableString.new("url/:param")
+=> "url/:param"
+>> s.format({param: 6})
+=> "url/6"
+```
+
+RemoteModels can define custom urls and call those as methods (see question.rb above).
+
+## Todo
+
+- More tests
+- CoreData integration
