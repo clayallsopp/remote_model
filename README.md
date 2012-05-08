@@ -4,7 +4,6 @@
 JSON API <-> NSObject in one line. Powered by RubyMotion and [BubbleWrap](https://github.com/mattetti/BubbleWrap/).
 
 ## Installation
-------------
 
 Add the git repos as submodules in ./vendor:
 
@@ -45,7 +44,6 @@ end
 ```
 
 ## Example
-------------
 
 Let's say we have some User, Question, and Answer objects retrievable via our API. Here's what our files can look like:
 
