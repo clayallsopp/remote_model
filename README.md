@@ -16,7 +16,9 @@ Then add the lib paths to your ./Rakefile:
 ```ruby
 Motion::Project::App.setup do |app|
   ...
-  app.files = Dir.glob(File.join(app.project_dir, 'vendor/BubbleWrap/lib/**/*.rb')) + Dir.glob(File.join(app.project_dir, 'vendor/remote_model/lib/**/*.rb')) + app.files
+  app.files = Dir.glob(File.join(app.project_dir, 'vendor/BubbleWrap/lib/**/*.rb')) 
+    + Dir.glob(File.join(app.project_dir, 'vendor/remote_model/lib/**/*.rb')) 
+    + app.files
   ...
 end
 ```
@@ -50,11 +52,9 @@ Let's say we have some User, Question, and Answer objects retrievable via our AP
 #### ./app/models/user
 ```ruby
 class User < RemoteModule::RemoteModel
-  attr_accessor :id, :phone, :email
+  attr_accessor :id
 
   has_many :questions
-
-  class << self; attr_accessor :current_user; end;
 
   collection_url "users"
   member_url "users/:id"
@@ -78,11 +78,11 @@ class Question < RemoteModule::RemoteModel
     user && user.id
   end
 
-  def make_active(active, &block)
+  def make_active(active)
     post(self.active_url, payload: {active: active}) do |response, json|
       self.is_active = json[:question][:is_active]
-      if block
-        block.call self
+      if block_given?
+        yield self
       end
     end
   end
@@ -109,6 +109,7 @@ user = User.find(1) do |user|
   end
 end
 
-
-=> [#<Question @answers=[#<Answer>, #<Answer>] @user=#<User>, #<Question @answers=[#<Answer>, #<Answer>] @user=#<User>]
+# Later...
+=> [#<Question @answers=[#<Answer>, #<Answer>] @user=#<User>, 
+    #<Question @answers=[#<Answer>, #<Answer>] @user=#<User>]
 ```
