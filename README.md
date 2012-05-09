@@ -85,9 +85,9 @@ Then add the lib paths to your ./Rakefile:
 ```ruby
 Motion::Project::App.setup do |app|
   ...
-  app.files = Dir.glob(File.join(app.project_dir, 'vendor/BubbleWrap/lib/**/*.rb')) 
-    + Dir.glob(File.join(app.project_dir, 'vendor/remote_model/lib/**/*.rb')) 
-    + app.files
+  app.files = Dir.glob(File.join(app.project_dir, 'vendor/BubbleWrap/lib/**/*.rb')) + 
+    Dir.glob(File.join(app.project_dir, 'vendor/remote_model/lib/**/*.rb')) + 
+    app.files
   ...
 end
 ```
