@@ -2,6 +2,8 @@
 
 The Facebook Graph API is a great example of how powerful RemoteModel is. Facebook auth code adapted from [facebook-auth-ruby-motion-example](https://github.com/aaronfeng/facebook-auth-ruby-motion-example)
 
+![Facebook Example Pic](http://i.imgur.com/BAwTK.png)
+
 ## Running
 
 You need [motion-cocoapods](https://github.com/HipByte/motion-cocoapods) installed to load the Facebook iOS SDK. 
@@ -10,7 +12,7 @@ It also appears that (as of May 9 2011), motion-cocoapods doesn't play nice with
 
 You need to specify an FB app ID, which you can create [in FB's Developer app](https://www.facebook.com/developers):
 
-###### app_delegate.rby
+###### app_delegate.rb
 
 ```ruby
 def application(application, didFinishLaunchingWithOptions:launchOptions)
