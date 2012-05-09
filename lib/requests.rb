@@ -64,6 +64,12 @@ module RemoteModule
       def http_call(method, url, call_options = {}, &block)
         options = call_options 
         options.merge!(RemoteModule::RemoteModel.default_url_options || {})
+        if query = options.delete(:query)
+          if url.index("?").nil?
+            url += "?"
+          end
+          url += query.map{|k,v| "#{k}=#{v}"}.join('&')
+        end
         if self.default_url_options
           options.merge!(self.default_url_options)
         end
