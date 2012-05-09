@@ -2,6 +2,11 @@ module RemoteModule
   class RemoteModel
     class << self
       attr_accessor :root_url, :default_url_options
+      attr_writer :extension
+
+      def extension
+        @extension || (self == RemoteModel ? false : RemoteModel.extension) || ".json"
+      end
 
       #################################
       # URLs for the resource
@@ -53,7 +58,7 @@ module RemoteModule
         if fragment[0..3] == "http"
           return fragment
         end
-        (self.root_url || RemoteModule::RemoteModel.root_url) + fragment + ".json"
+        (self.root_url || RemoteModule::RemoteModel.root_url) + fragment +  self.extension
       end
 
       def http_call(method, url, call_options = {}, &block)
