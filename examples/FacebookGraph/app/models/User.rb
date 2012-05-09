@@ -18,11 +18,7 @@ class User < RemoteModule::RemoteModel
     get(self.friends_url) do |response, json|
       self.friends = (json && json[:data]) || []
       if json.nil?
-        alert = UIAlertView.new
-        alert.title = "Friends not given"
-        alert.message = "Denied privacy permissions."
-        alert.addButtonWithTitle "OK"
-        alert.show
+        show_privacy_alert("Friends")
       end
       if block
         block.call self
@@ -32,11 +28,22 @@ class User < RemoteModule::RemoteModel
 
   def find_wall_posts(&block)
     get(self.wall_posts_url) do |response, json|
-
-      self.wall_posts = json[:data]
+      self.wall_posts = (json && json[:data]) || []
+      if json.nil?
+        show_privacy_alert("Wall Posts")
+      end
       if block
         block.call self
       end
     end
+  end
+
+  private
+  def show_privacy_alert(entity)
+    alert = UIAlertView.new
+    alert.title = "#{entity} not given"
+    alert.message = "Denied privacy permissions."
+    alert.addButtonWithTitle "OK"
+    alert.show
   end
 end
