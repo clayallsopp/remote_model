@@ -1,5 +1,6 @@
 $:.unshift("/Library/RubyMotion/lib")
 require 'motion/project'
+require 'motion-cocoapods'
 
 Motion::Project::App.setup do |app|
   # Use `rake config' to see complete project settings.
@@ -7,4 +8,14 @@ Motion::Project::App.setup do |app|
   app.files = Dir.glob(File.join(app.project_dir, '../../vendor/BubbleWrap/lib/**/*.rb')) + 
     Dir.glob(File.join(app.project_dir, '../../lib/**/*.rb')) + 
     app.files
+  app.files_dependencies 'app/controllers/facebook_login_controller.rb' => 'app/initializers/remote_model.rb'
+  fb_app_id = "YOUR-APP-ID"
+  if fb_app_id == "YOUR-APP-ID"
+    raise "You need to specify a Facebook App ID in ./Rakefile"
+  end
+  app.info_plist['CFBundleURLTypes'] = [{'CFBundleURLSchemes' => ["fb#{fb_app_id}"]}]
+
+  app.pods do
+    dependency 'Facebook-iOS-SDK'
+  end
 end

@@ -16,7 +16,14 @@ class User < RemoteModule::RemoteModel
   # end
   def find_friends(&block)
     get(self.friends_url) do |response, json|
-      self.friends = json[:data]
+      self.friends = (json && json[:data]) || []
+      if json.nil?
+        alert = UIAlertView.new
+        alert.title = "Friends not given"
+        alert.message = "Denied privacy permissions."
+        alert.addButtonWithTitle "OK"
+        alert.show
+      end
       if block
         block.call self
       end
