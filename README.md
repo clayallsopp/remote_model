@@ -85,9 +85,9 @@ Then add the lib paths to your ./Rakefile:
 ```ruby
 Motion::Project::App.setup do |app|
   ...
-  app.files = Dir.glob(File.join(app.project_dir, 'vendor/BubbleWrap/lib/**/*.rb')) 
-    + Dir.glob(File.join(app.project_dir, 'vendor/remote_model/lib/**/*.rb')) 
-    + app.files
+  app.files = Dir.glob(File.join(app.project_dir, 'vendor/BubbleWrap/lib/**/*.rb')) + 
+    Dir.glob(File.join(app.project_dir, 'vendor/remote_model/lib/**/*.rb')) + 
+    app.files
   ...
 end
 ```
@@ -103,6 +103,7 @@ module RemoteModule
 
     # Options attached to every request
     # Appendable per model subclass
+    # See BubbleWrap docs on what can be passed in BubbleWrap::HTTP.<method>(url, options)
     self.default_url_options = {
         :headers => {
           "x-api-token" => "some_token",
