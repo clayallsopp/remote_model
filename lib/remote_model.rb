@@ -15,7 +15,7 @@ module RemoteModule
       # self.has_one :question, :answer, :camel_case
       # => {:question => Question, :answer => Answer, :camel_case => CamelCase}
       def has_one(params = [])
-        make_fn_lookup "has_one", params, lambda { |sym| sym.to_s.split("_").collect {|s| s.capitalize}.join }
+        make_fn_lookup "has_one", params, singular_klass_str_lambda
       end
 
       # EX 
@@ -29,7 +29,7 @@ module RemoteModule
       # self.belongs_to :question, :answer, :camel_case
       # => {:question => Question, :answer => Answer, :camel_case => CamelCase}
       def belongs_to(params = [])
-        make_fn_lookup "belongs_to", params, lambda { |sym| sym.to_s.split("_").collect {|s| s.capitalize}.join }
+        make_fn_lookup "belongs_to", params, singular_klass_str_lambda
       end
 
       def pluralize
@@ -51,6 +51,10 @@ module RemoteModule
         end
       end
 
+      def singular_klass_str_lambda
+        lambda { |sym| sym.to_s.split("_").collect {|s| s.capitalize}.join }
+      end
+
       # How we fake define_method, essentially.
       # ivar_suffix -> what is the new @ivar called
       # params -> the :symbols to map to classes
@@ -63,17 +67,18 @@ module RemoteModule
         
         sym_to_klass_sym = {}
         if params.class == Symbol
-          sym_to_klass_sym[params] = params
+          sym_to_klass_sym[params] = transform.call(params)
         elsif params.class == Array
           params.each {|klass_sym|
-            sym_to_klass_sym[klass_sym] = klass_sym
+            sym_to_klass_sym[klass_sym] = transform.call(klass_sym)
           }
         else
+          params.each { |fn_sym, klass_sym| params[fn_sym] = singular_klass_str_lambda.call(klass_sym) }
           sym_to_klass_sym = params
         end
 
         sym_to_klass_sym.each do |relation_sym, klass_sym|
-            klass_str = transform.call(klass_sym)
+            klass_str = klass_sym.to_s
             instance_variable_get(ivar)[relation_sym] = make_klass(klass_str)
           end
 
