@@ -12,7 +12,7 @@ It also appears that (as of May 9 2011), motion-cocoapods doesn't play nice with
 
 You need to specify an FB app ID, which you can create [in FB's Developer app](https://www.facebook.com/developers):
 
-###### app_delegate.rby
+###### app_delegate.rb
 
 ```ruby
 def application(application, didFinishLaunchingWithOptions:launchOptions)
