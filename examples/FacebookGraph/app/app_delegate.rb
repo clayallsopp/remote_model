@@ -18,6 +18,9 @@ class AppDelegate
     if defaults["FBAccessTokenKey"] && defaults["FBExpirationDateKey"]
       @facebook.accessToken = defaults["FBAccessTokenKey"]
       @facebook.expirationDate = defaults["FBExpirationDateKey"]
+    end
+
+    if facebook.isSessionValid
       openFriendsContorller
     else
       @navigationController.pushViewController(FacebookLoginController.alloc.init, animated: false)
