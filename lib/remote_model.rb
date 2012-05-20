@@ -107,18 +107,26 @@ module RemoteModule
       end
     end
 
-    def methods
-      methods = super
-
+    def remote_model_methods
+      methods = []
       [self.class.has_one, self.class.has_many, self.class.belongs_to].each {|fn_hash|
         methods += fn_hash.collect {|sym, klass|
           [sym, (sym.to_s + "=:").to_sym]
         }.flatten
       }
+      methods + RemoteModule::RemoteModel::HTTP_METHODS
+    end
 
-      methods += RemoteModule::RemoteModel::HTTP_METHODS
+    def methods
+      super + remote_model_methods
+    end
 
-      methods
+    def respond_to?(symbol, include_private = false)
+      if remote_model_methods.include? symbol
+        return true
+      end
+
+      super
     end
 
     def method_missing(sym, *args, &block)
