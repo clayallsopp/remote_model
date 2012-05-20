@@ -21,6 +21,21 @@ class Question < RemoteModule::RemoteModel
   end
 end
 
+class CamelCaseModel < RemoteModule::RemoteModel
+  has_one :another_camel_case_model
+  has_many :bunch_of_camel_case_models
+end
+
+class AnotherCamelCaseModel < RemoteModule::RemoteModel
+  attr_accessor :id
+
+  belongs_to :camel_case_model
+end
+
+class BunchOfCamelCaseModel < RemoteModule::RemoteModel
+  belongs_to :camel_case_model
+end
+
 describe "The active record-esque stuff" do
   it "creates object from hash" do
     hash = {id: 5, question: "Hello my name is clay"}
@@ -74,6 +89,25 @@ describe "The active record-esque stuff" do
       if q.answers.count > 0
         check_question_and_answers(q, answers[index])
       end
+    }
+  end
+
+  it "works with camel cased models" do
+    c = CamelCaseModel.new({another_camel_case_model: {id: 7}, bunch_of_camel_case_models: [{}, {}]})
+    c.another_camel_case_model.class.should == AnotherCamelCaseModel
+    c.another_camel_case_model.id.should == 7
+    c.bunch_of_camel_case_models.count.should == 2
+    c.bunch_of_camel_case_models.each {|model|
+      model.class.should == BunchOfCamelCaseModel
+    }
+
+    c.setAnotherCamelCaseModel({id: 8})
+    c.another_camel_case_model.id.should == 8
+
+    c.setBunchOfCamelCaseModels([{}, {}, {}])
+    c.bunch_of_camel_case_models.count.should == 3
+    c.bunch_of_camel_case_models.each {|model|
+      model.class.should == BunchOfCamelCaseModel
     }
   end
 end
