@@ -111,7 +111,7 @@ module RemoteModule
       methods = []
       [self.class.has_one, self.class.has_many, self.class.belongs_to].each {|fn_hash|
         methods += fn_hash.collect {|sym, klass|
-          [sym, (sym.to_s + "=:").to_sym]
+          [sym, (sym.to_s + "=:").to_sym, ("set" + sym.to_s.capitalize).to_sym]
         }.flatten
       }
       methods + RemoteModule::RemoteModel::HTTP_METHODS
@@ -129,32 +129,34 @@ module RemoteModule
       super
     end
 
-    def method_missing(sym, *args, &block)
+    def method_missing(method, *args, &block)
       # Check for custom URLs
-      if self.class.custom_urls.has_key? sym
-        return self.class.custom_urls[sym].format(args && args[0], self)
+      if self.class.custom_urls.has_key? method
+        return self.class.custom_urls[method].format(args && args[0], self)
       end
 
       # has_one relationships
-      if self.class.has_one.has_key?(sym) || self.class.belongs_to.has_key?(sym)
-        return instance_variable_get("@" + sym.to_s)
-      elsif (klass = self.class.has_one[sym.to_s[0..-2].to_sym] || klass = self.class.belongs_to[sym.to_s[0..-2].to_sym])
+      if self.class.has_one.has_key?(method) || self.class.belongs_to.has_key?(method)
+        return instance_variable_get("@" + method.to_s)
+      elsif (setter_vals = setter_klass(self.class.has_one, method) || setter_vals = setter_klass(self.class.belongs_to, method))
+        klass, hash_symbol = setter_vals
         obj = args[0]
         if obj.class != klass
           obj = klass.new(obj)
         end
-        return instance_variable_set("@" + sym.to_s[0..-2], obj)
+        return instance_variable_set("@" + hash_symbol.to_s, obj)
       end
 
       # has_many relationships
-      if self.class.has_many.has_key?(sym)
-        ivar = "@" + sym.to_s
+      if self.class.has_many.has_key?(method)
+        ivar = "@" + method.to_s
         if !instance_variable_defined? ivar
           instance_variable_set(ivar, [])
         end
         return instance_variable_get ivar
-      elsif (klass = self.class.has_many[sym.to_s[0..-2].to_sym])
-        ivar = "@" + sym.to_s[0..-2]
+      elsif (setter_vals = setter_klass(self.class.has_many, method))
+        klass, hash_symbol = setter_vals
+        ivar = "@" + hash_symbol.to_s
         if !instance_variable_defined? ivar
           instance_variable_set(ivar, [])
         end
@@ -180,11 +182,40 @@ module RemoteModule
       end
 
       # HTTP methods
-      if RemoteModule::RemoteModel::HTTP_METHODS.member? sym
-        return self.class.send(sym, *args, &block)
+      if RemoteModule::RemoteModel::HTTP_METHODS.member? method
+        return self.class.send(method, *args, &block)
       end
 
       super
+    end
+
+    private
+    # PARAMS For a given method symbol, look through the hash
+    #   (which is a map of :symbol => Class)
+    #   and see if that symbol applies to any keys.
+    # RETURNS an array [Klass, symbol] for which the original
+    #   method symbol applies.
+    # EX
+    # setter_klass({:answers => Answer}, :answers=)
+    # => [Answer, :answers]
+    # setter_klass({:answers => Answer}, :setAnswers)
+    # => [Answer, :answers]
+    def setter_klass(hash, symbol)
+
+      # go ahead and guess it's of the form :symbol=:
+      hash_symbol = symbol.to_s[0..-2].to_sym
+
+      # if it's the ObjC style setSymbol, change it to that.
+      if symbol[0..2] == "set"
+        # handles camel case arguments. ex setSomeVariableLikeThis => some_variable_like_this
+        hash_symbol = symbol.to_s[3..-1].split(/([[:upper:]][[:lower:]]*)/).delete_if(&:empty?).map(&:downcase).join("_").to_sym
+      end
+
+      klass = hash[hash_symbol]
+      if klass.nil?
+        return nil
+      end
+      [klass, hash_symbol]
     end
   end
 end
