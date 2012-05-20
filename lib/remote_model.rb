@@ -157,11 +157,8 @@ module RemoteModule
       elsif (setter_vals = setter_klass(self.class.has_many, method))
         klass, hash_symbol = setter_vals
         ivar = "@" + hash_symbol.to_s
-        if !instance_variable_defined? ivar
-          instance_variable_set(ivar, [])
-        end
 
-        tmp = instance_variable_get(ivar)
+        tmp = []
         args[0].each do |arg|
           rep = nil
           if arg.class == Hash
