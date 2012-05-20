@@ -36,6 +36,14 @@ module RemoteModule
         self.to_s.downcase + "s"
       end
 
+      def method_missing(method, *args, &block)
+        if self.custom_urls.has_key? method
+          return self.custom_urls[method].format(args && args[0], self)
+        end
+
+        super
+      end
+
       private
       # This is kind of neat.
       # Because models can be mutually dependent (User has a Question, Question has a User),
