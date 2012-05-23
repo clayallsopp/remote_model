@@ -2,3 +2,10 @@
 build
 examples/FacebookGraph/build
 examples/FacebookGraph/vendor
+resources/*.nib
+resources/*.momd
+resources/*.storyboardc
+*.gem
+.bundle
+Gemfile.lock
+pkg/*

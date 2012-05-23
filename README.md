@@ -73,24 +73,23 @@ end
 
 ## Installation
 
-Add the git repos as submodules in ./vendor:
-
-```shell
-git submodule add git://github.com/mattetti/BubbleWrap.git ./vendor/BubbleWrap
-git submodule add git://github.com/clayallsopp/remote_model.git ./vendor/remote_model
+```ruby
+gem install remote_model
 ```
 
-Then add the lib paths to your ./Rakefile:
+And now in your Rakefile, require `remote_model`:
 
 ```ruby
+$:.unshift("/Library/RubyMotion/lib")
+require 'motion/project'
+require 'remote_model'
+
 Motion::Project::App.setup do |app|
-  ...
-  app.files = Dir.glob(File.join(app.project_dir, 'vendor/BubbleWrap/lib/**/*.rb')) + 
-    Dir.glob(File.join(app.project_dir, 'vendor/remote_model/lib/**/*.rb')) + 
-    app.files
   ...
 end
 ```
+
+## Setup
 
 Add an initialization file somewhere, like ./app/initializers/remote_model.rb. This is where we put the API specifications:
 

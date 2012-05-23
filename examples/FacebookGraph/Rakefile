@@ -1,13 +1,11 @@
 $:.unshift("/Library/RubyMotion/lib")
 require 'motion/project'
 require 'motion-cocoapods'
+require 'remote_model'
 
 Motion::Project::App.setup do |app|
   # Use `rake config' to see complete project settings.
   app.name = 'FacebookGraph'
-  app.files = Dir.glob(File.join(app.project_dir, '../../vendor/BubbleWrap/lib/**/*.rb')) + 
-    Dir.glob(File.join(app.project_dir, '../../lib/**/*.rb')) + 
-    app.files
   app.files_dependencies 'app/controllers/facebook_login_controller.rb' => 'app/initializers/remote_model.rb'
   fb_app_id = "YOUR-APP-ID"
   if fb_app_id == "YOUR-APP-ID"
