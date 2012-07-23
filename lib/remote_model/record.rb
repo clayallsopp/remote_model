@@ -22,7 +22,7 @@ module RemoteModule
             if json.class == Array
               arr_rep = json
             elsif json.class == Hash
-              plural_sym = self.pluralize.to_sym
+              plural_sym = self.pluralize.downcase.to_sym
               if json.has_key? plural_sym
                 arr_rep = json[plural_sym]
               end
