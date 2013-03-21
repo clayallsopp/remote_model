@@ -1,3 +1,12 @@
+# Deprecation Warning
+
+I'd recommend not using remote_model and instead looking into this: 
+
+https://github.com/clayallsopp/maglev 
+
+it's basically a more stable rewrite of remote_model.
+
+
 # RemoteModel
 
 
