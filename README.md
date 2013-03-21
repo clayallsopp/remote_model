@@ -1,11 +1,8 @@
 # Deprecation Warning
 
-I'd recommend not using remote_model and instead looking into this: 
+`remote_model` is from a time and place in RubyMotion where only the hackiest of hacks made this possible; please look into using (the tentatively titled) Maglev as a more modern, stable replacement: 
 
-https://github.com/clayallsopp/maglev 
-
-it's basically a more stable rewrite of remote_model.
-
+https://github.com/clayallsopp/maglev
 
 # RemoteModel
 
